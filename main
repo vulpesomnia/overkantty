@@ -5,15 +5,23 @@ int main(){
     cbreak();
     noecho();
     curs_set(0);
+    nodelay(stdscr, TRUE);
 
     int height = 100;
     int width = 100;
     WINDOW* win = newwin(height, width, 0, 0);
     //box(win,0,0);
-
+    int ch;
     while(true){
         mvwprintw(win,1,1,"a");
         wrefresh(win);
+        ch=getch();
+        if (ch!=ERR){
+            if (ch==27){
+                endwin();
+                return 0;
+            }
+        }
     }
 
 }
