@@ -1,0 +1,32 @@
+Nimi ideoita:
+- Ylipaistettu käntty
+- Overkäntty
+
+Overcooked, mutta känttyjen kanssa. Sinulle annetaan lista erilaisia
+känttyjä, jota sinun pitää tehdä. Sinulla on rajattu aika tehdä känttyjä.
+
+Mitä tehdä:
+- Taso:
+ - Tiedosto, jossa on numeroita. (esim. 0 = tyhjä, 1 = pöytä, 2 = leikkuulauta jne.)
+- Renderöinti:
+ - Spritet
+  - Värit
+  - 2D
+ - Kamera on vakio.
+- Gameplay:
+ - Movement 
+- Pelaajan liikkuminen kentässä
+- Kollisiot (Et voi mennä läpi fyysista asioista)
+ - Gameplay loop:
+  - Pelaajalle annetaan lista känttyjä, jota pitää tehdä.
+  - Pelaajalle annetaan rajattu aika tehdä käntyt.
+  - Pelaaja käyttää erilaisia asemia (esim. panini, leikkuulauta, voipaikka idk) tekemään käntyt.
+  - Pelaajalla voi olla vain yksi itemi kädesä.
+  - Itemeitä voi laittaa pöydälle.
+  - Jotkut asemat ottavat monta itemiä(Esim jossain asemalla voi tehdä juustokäntyn[esim. juusto + leikattu käntty]).
+  - Tehdyt käntyt viedään tiskille, jossa listalta yliviivaantu se käntty.
+ - Pelin häviäminen:
+  - Pelaaja häviää, jos hän ei saa tehtyä käntyt ennen ajan loppua.
+  - Lopussa lasketaan kaikki listat känttyjä, mitä pelaaja sai tehtyä.
+
+
