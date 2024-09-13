@@ -1,0 +1,19 @@
+#include <ncurses.h>
+
+int main(){
+    initscr();
+    cbreak();
+    noecho();
+    curs_set(0);
+
+    int height = 100;
+    int width = 100;
+    WINDOW* win = newwin(height, width, 0, 0);
+    //box(win,0,0);
+
+    while(true){
+        mvwprintw(win,1,1,"a");
+        wrefresh(win);
+    }
+
+}
