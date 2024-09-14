@@ -23,6 +23,17 @@ class Item {
         int spriteIndex;
 };
 
+class Tile {
+  public:
+    int spriteIndex;
+    Item* heldItem;
+    int x, y;
+    Tile(int tileX, int tileY, int tileSprite) {
+      x = tileX;
+      y = tileY;
+      spriteIndex = tileSprite;
+    }
+
 Player* player;
 
 int tileHeight = 8;
@@ -249,12 +260,13 @@ std::vector<std::vector<short>> spriteColorBack = {
     },
 };
 
-/* 0: ilma
- * 1: pöytä
- * 2: tiski
- * 3: leikkuulauta
- * 4: juustoasema
- * 5: paninikone
+/* 0: pelaaja
+ * 1: ilma
+ * 2: pöytä
+ * 3: tiski
+ * 4: leikkuulauta
+ * 5: juustoasema
+ * 6: paninikone
  */
 
 
@@ -269,7 +281,6 @@ std::vector<int> tileMap = {
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 };
-
 
 std::vector<char> characters = {' ', '#', 'b', '/', '|', '\\', '-', '_', '(', ')', 'o', '<', '>'};
 
@@ -303,12 +314,10 @@ void draw_tile(WINDOW *win, int screenInfo[],int tileIndex, int x, int y) {
     }
 }
 
-void update_screen(WINDOW *win, int screenInfo[]) {
-    for (int y = 0 ; y < screenInfo[4] ; y++) {
-        for (int x = 0 ; x < screenInfo[5] ; x++) {
-            draw_tile(win, screenInfo, tileMap[y*screenInfo[5] + x], x, y);
-        }
-    }
+void update_screen(WINDOW *win, int screenInfo[], std::vector<Tile*> tiles) {
+    for (int i = 0; i < (int)tiles.size(); i++) {
+      draw_tile(win, screenInfo, tiles[i]->spriteIndex, tiles[i]->x, tiles[i]->y);
+    };
     draw_sprite(win ,screenInfo, player->spriteIndex, player->x, player->y);
 }
 
@@ -364,6 +373,21 @@ void utilize_colors(WINDOW *win) {
     }
 }
 
+std::vector<Tile*> levelTiles;
+
+void createLevel(std::vector<int> map) {
+  int x = 0;
+  int y = 0;
+  for (int i = 0; i <= (int)map.size(); i++) {
+    if (i % width/tileWidth == 0 and i != 0) {
+      y++;
+      x = 0;
+    }
+    levelTiles.push_back(new Tile(x, y, map[i]));
+    x++;
+  }
+} 
+
 int main(){
     initscr();
     cbreak();
@@ -371,9 +395,13 @@ int main(){
     curs_set(0);
     start_color();
     nodelay(stdscr, TRUE);
+
+    createLevel(tileMap);
     player = new Player(tileHeight * 2, tileWidth * 2, 0);
+
     int heightTiles = height/tileHeight;
     int widthTiles = width/tileWidth;
+
     int screenInfo[6] = {height, width, tileHeight, tileWidth, heightTiles, widthTiles};
     WINDOW* win = newwin(height, width, 0, 0);
     utilize_colors(win);
