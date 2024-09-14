@@ -29,4 +29,15 @@ Mitä tehdä:
   - Pelaaja häviää, jos hän ei saa tehtyä käntyt ennen ajan loppua.
   - Lopussa lasketaan kaikki listat känttyjä, mitä pelaaja sai tehtyä.
 
+Eri asemia:
+ - Leikkuulauta:
+  Käntty -> Leikattu käntty
+ - Pöytä:
+  Mikä vaan itemi -> Jättää sen pöydälle
+ - Paninikone:
+  Juustolla Täytetty Käntty -> Paistettu Juustolla Täytetty käntty
+  Käntty -> Paistettu Käntty
+ - Juustoasema:
+  Leikattu käntty -> Juustolla Täytetty Käntty
+
 
