@@ -30,7 +30,21 @@ int dy=0;
 //0 nothing
 //1 käntty
 
+class Item {
+  int spriteIndex;
+};
 
+class Tile {
+  public:
+    int spriteIndex;
+    Item* heldItem;
+    int x, y;
+    Tile(int tileX, int tileY, int tileSprite) {
+      x = tileX;
+      y = tileY;
+      spriteIndex = tileSprite;
+    }
+};
 std::vector<uint64_t> alphabet = {
     0b111001111101111, //a
     0b100100111101111, //b
@@ -74,9 +88,9 @@ std::vector<uint64_t> alphabet = {
     0b000000000010110, //,
     0b000010000010110, //;
     0b000000100000100, //:
-    0b000000111000000; //-
-    0b000000000000111; //_
-}
+    0b000000111000000, //-
+    0b000000000000111 //_
+};
 
 std::vector<std::vector<int>> spriteSizes = {
     {16,8},
@@ -342,14 +356,26 @@ void draw_tile(WINDOW *win, int screenInfo[],int tileIndex, int x, int y) {
     }
 }
 
-void update_screen(WINDOW *win, int screenInfo[]) {
-    for (int y = 0 ; y < screenInfo[4] ; y++) {
-        for (int x = 0 ; x < screenInfo[5] ; x++) {
-            draw_tile(win, screenInfo, tileMap[y*screenInfo[5] + x], x, y);
-        }
-    }
+void update_screen(WINDOW *win, int screenInfo[], std::vector<Tile*> tiles) {
+    for (int i = 0; i < (int)tiles.size(); i++) {
+      draw_tile(win, screenInfo, tiles[i]->spriteIndex, tiles[i]->x, tiles[i]->y);
+    };
     draw_sprite(win ,screenInfo, player->spriteIndex, player->x, player->y);
 }
+
+std::vector<Tile*> levelTiles;
+void createLevel(std::vector<int> map) {
+  int x = 0;
+  int y = 0;
+  for (int i = 0; i < (int)map.size(); i++) {
+    if (i % (width/tileWidth) == 0 and i != 0) {
+      y++;
+      x = 0;
+    }
+    levelTiles.push_back(new Tile(x, y, map[i]));
+    x++;
+  }
+} 
 
 std::map<int, std::vector<int>> inputs = {{(int)'w', {0, -1}}, {(int)'a', {-2, 0}}, {(int)'s', {0, 1}}, {(int)'d', {2, 0}}};
 
@@ -410,6 +436,7 @@ int main(){
     curs_set(0);
     start_color();
     nodelay(stdscr, TRUE);
+    createLevel(tileMap);
     player = new Player(tileHeight * 2, tileWidth * 2, 0);
     int heightTiles = height/tileHeight;
     int widthTiles = width/tileWidth;
@@ -419,7 +446,7 @@ int main(){
 
     int ch;
     while (true) {
-        update_screen(win, screenInfo);
+        update_screen(win, screenInfo, levelTiles);
         wrefresh(win);
         handleInput();
         ch = getch();
