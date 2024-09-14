@@ -9,31 +9,13 @@ class Player {
     public: 
         int x, y;
         int spriteIndex;
-        int heldItem;
 
         Player(int px, int py, int psprite) {
             x = px;
             y = py;
             spriteIndex = psprite;
-            heldItem = 0;
         }
 };
-class Item {
-    public:
-        int spriteIndex;
-};
-
-class Tile {
-  public:
-    int spriteIndex;
-    Item* heldItem;
-    int x, y;
-    Tile(int tileX, int tileY, int tileSprite) {
-      x = tileX;
-      y = tileY;
-      spriteIndex = tileSprite;
-    }
-
 Player* player;
 
 int tileHeight = 8;
@@ -48,6 +30,53 @@ int dy=0;
 //0 nothing
 //1 käntty
 
+
+std::vector<uint64_t> alphabet = {
+    0b111001111101111, //a
+    0b100100111101111, //b
+    0b000111100100111, //c
+    0b001001111101111, //d
+    0b111101111100111, //e
+    0b111100110100100, //f
+    0b111101111001011, //g
+    0b100100111101101, //h
+    0b010000010010010, //i
+    0b010000010010110, //j
+    0b100101110101101, //k
+    0b100100100100110, //l
+    0b000101111101101, //m
+    0b000111101101101, //n
+    0b000111101101111, //o
+    0b111101111100100, //p
+    0b111101111001001, //q
+    0b000110100100100, //r
+    0b111100010001111, //s
+    0b000010111010011, //t
+    0b000101101101111, //u
+    0b000101101101010, //v
+    0b000101101111101, //w
+    0b101101010101101, //x
+    0b000101111001011, //y
+    0b000111001010111, //z
+    0b111101101101111, //0
+    0b110010010010111, //1
+    0b111001111100111, //2
+    0b111001111001111, //3
+    0b101101111001001, //4
+    0b111100111001111, //5
+    0b111100111101111, //6
+    0b111001001001001, //7
+    0b111101111101111, //8
+    0b111101111001111, //9
+    0b010010010000010, //!
+    0b111001011000010, //?
+    0b000000000000100, //.
+    0b000000000010110, //,
+    0b000010000010110, //;
+    0b000000100000100, //:
+    0b000000111000000; //-
+    0b000000000000111; //_
+}
 
 std::vector<std::vector<int>> spriteSizes = {
     {16,8},
@@ -260,13 +289,12 @@ std::vector<std::vector<short>> spriteColorBack = {
     },
 };
 
-/* 0: pelaaja
- * 1: ilma
- * 2: pöytä
- * 3: tiski
- * 4: leikkuulauta
- * 5: juustoasema
- * 6: paninikone
+/* 0: ilma
+ * 1: pöytä
+ * 2: tiski
+ * 3: leikkuulauta
+ * 4: juustoasema
+ * 5: paninikone
  */
 
 
@@ -314,10 +342,12 @@ void draw_tile(WINDOW *win, int screenInfo[],int tileIndex, int x, int y) {
     }
 }
 
-void update_screen(WINDOW *win, int screenInfo[], std::vector<Tile*> tiles) {
-    for (int i = 0; i < (int)tiles.size(); i++) {
-      draw_tile(win, screenInfo, tiles[i]->spriteIndex, tiles[i]->x, tiles[i]->y);
-    };
+void update_screen(WINDOW *win, int screenInfo[]) {
+    for (int y = 0 ; y < screenInfo[4] ; y++) {
+        for (int x = 0 ; x < screenInfo[5] ; x++) {
+            draw_tile(win, screenInfo, tileMap[y*screenInfo[5] + x], x, y);
+        }
+    }
     draw_sprite(win ,screenInfo, player->spriteIndex, player->x, player->y);
 }
 
@@ -327,10 +357,10 @@ void handleMovement(std::vector<int> movementVector) {
     int newPlayerX = movementVector[0] + player->x;
     int newPlayerY = movementVector[1] + player->y;
     if (!(newPlayerX < 0 or newPlayerX + tileWidth > width or newPlayerY < 0 or newPlayerY + tileHeight > height)) {
-        for (int i = 0 ; i < (int) tileMap.size() ; i++) {
-            if (tileMap[i] != 1){
-                if (newPlayerX < 16*(i%(width/tileWidth) + 1) && newPlayerX > 16*(i%(width/tileWidth) - 1) && newPlayerY < (i/(width/tileWidth) + 1)*tileHeight && newPlayerY > (i/(width/tileWidth) - 1)*tileHeight) {
-                    return;
+        for (int i=0;i<tileMap.size();i++){
+            if (tileMap[i]!=1){
+                if (newPlayerX<16*(i%18+1) && newPlayerX>16*(i%18-1) && newPlayerY<(i/18+1)*tileHeight && newPlayerY>(i/18-1)*tileHeight){
+                    //return;
                 }
             }
         }
@@ -361,9 +391,9 @@ void handleInput() {
 
 void utilize_colors(WINDOW *win) {
     int n = 0;
-    for (int i = 0 ; i < (int) sprites.size() ; i++) {
+    for (int i = 0 ; i < sprites.size() ; i++) {
         //spriteColorIndex.push_back({});
-        for (int j = 0 ; j < (int) sprites[i].size() ; j++) {
+        for (int j = 0 ; j < sprites[i].size() ; j++) {
             if (colorIndexes.find((spriteColorBack[i][j]<<16) | (spriteColorFront[i][j])) == colorIndexes.end()) {
                 colorIndexes[(spriteColorBack[i][j]<<16)|(spriteColorFront[i][j])] = n;
                 init_pair(n, spriteColorFront[i][j], spriteColorBack[i][j]);
@@ -373,21 +403,6 @@ void utilize_colors(WINDOW *win) {
     }
 }
 
-std::vector<Tile*> levelTiles;
-
-void createLevel(std::vector<int> map) {
-  int x = 0;
-  int y = 0;
-  for (int i = 0; i <= (int)map.size(); i++) {
-    if (i % width/tileWidth == 0 and i != 0) {
-      y++;
-      x = 0;
-    }
-    levelTiles.push_back(new Tile(x, y, map[i]));
-    x++;
-  }
-} 
-
 int main(){
     initscr();
     cbreak();
@@ -395,13 +410,9 @@ int main(){
     curs_set(0);
     start_color();
     nodelay(stdscr, TRUE);
-
-    createLevel(tileMap);
     player = new Player(tileHeight * 2, tileWidth * 2, 0);
-
     int heightTiles = height/tileHeight;
     int widthTiles = width/tileWidth;
-
     int screenInfo[6] = {height, width, tileHeight, tileWidth, heightTiles, widthTiles};
     WINDOW* win = newwin(height, width, 24, 0);
     utilize_colors(win);
