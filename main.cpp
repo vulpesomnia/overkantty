@@ -1,3 +1,4 @@
+#include <map>
 #include <ncurses.h>
 #include <vector>
 #include <iostream>
@@ -5,14 +6,15 @@
 class Player {
     public: 
         int x, y;
-        std::vector<int> sprite;
+        int spriteIndex;
         
-        Player(int px, int py, std::vector<int> psprite) {
+        Player(int px, int py, int psprite) {
             x = px;
             y = py;
-            sprite = psprite;
+            spriteIndex = psprite;
         }
 };
+Player* player;
 
 
 std::vector<std::vector<int>> sprites= {
@@ -205,7 +207,19 @@ void update_screen(WINDOW *win, int screenInfo[]){
             draw_tile(win, screenInfo, tileMap[y*screenInfo[5] + x], x, y);
         }
     }
-    draw_sprite(win ,screenInfo, 0, 3,3);
+    draw_sprite(win ,screenInfo, player->spriteIndex, player->x, player->y);
+}
+
+std::map<int, std::vector<int>> inputs = {{(int)'w', {0, -1}}, {(int)'a', {-2, 0}}, {(int)'s', {0, 1}}, {(int)'d', {2, 0}}};
+
+void handleInput() {
+  int input = getch();
+  for (const auto& pair : inputs) {
+    if (input == pair.first) {
+      player->x += pair.second[0];
+      player->y += pair.second[1];
+    }
+  }
 }
 
 void utilize_colors(){
@@ -223,13 +237,12 @@ int main(){
     curs_set(0);
     start_color();
     nodelay(stdscr, TRUE);
-
     utilize_colors();
-
     int tileHeight = 8;
     int tileWidth = 16;
     int height=9 * tileHeight;
     int width=18 * tileWidth;
+    player = new Player(tileHeight * 2, tileWidth * 2, 0);
     int heightTiles = height/tileHeight;
     int widthTiles = width/tileWidth;
     int screenInfo[6]={height, width, tileHeight, tileWidth, heightTiles, widthTiles};
@@ -238,6 +251,7 @@ int main(){
     while(true){
         update_screen(win, screenInfo);
         wrefresh(win);
+        handleInput();
         ch=getch();
         if (ch!=ERR){
             if (ch==27){
