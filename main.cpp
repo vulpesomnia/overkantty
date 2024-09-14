@@ -9,13 +9,20 @@ class Player {
     public: 
         int x, y;
         int spriteIndex;
+        int heldItem;
 
         Player(int px, int py, int psprite) {
             x = px;
             y = py;
             spriteIndex = psprite;
+            heldItem = 0;
         }
 };
+class Item {
+    public:
+        int spriteIndex;
+};
+
 Player* player;
 
 int tileHeight = 8;
@@ -311,10 +318,10 @@ void handleMovement(std::vector<int> movementVector) {
     int newPlayerX = movementVector[0] + player->x;
     int newPlayerY = movementVector[1] + player->y;
     if (!(newPlayerX < 0 or newPlayerX + tileWidth > width or newPlayerY < 0 or newPlayerY + tileHeight > height)) {
-        for (int i=0;i<tileMap.size();i++){
-            if (tileMap[i]!=1){
-                if (newPlayerX<16*(i%18+1) && newPlayerX>16*(i%18-1) && newPlayerY<(i/18+1)*tileHeight && newPlayerY>(i/18-1)*tileHeight){
-                    //return;
+        for (int i = 0 ; i < (int) tileMap.size() ; i++) {
+            if (tileMap[i] != 1){
+                if (newPlayerX < 16*(i%(width/tileWidth) + 1) && newPlayerX > 16*(i%(width/tileWidth) - 1) && newPlayerY < (i/(width/tileWidth) + 1)*tileHeight && newPlayerY > (i/(width/tileWidth) - 1)*tileHeight) {
+                    return;
                 }
             }
         }
@@ -345,9 +352,9 @@ void handleInput() {
 
 void utilize_colors(WINDOW *win) {
     int n = 0;
-    for (int i = 0 ; i < sprites.size() ; i++) {
+    for (int i = 0 ; i < (int) sprites.size() ; i++) {
         //spriteColorIndex.push_back({});
-        for (int j = 0 ; j < sprites[i].size() ; j++) {
+        for (int j = 0 ; j < (int) sprites[i].size() ; j++) {
             if (colorIndexes.find((spriteColorBack[i][j]<<16) | (spriteColorFront[i][j])) == colorIndexes.end()) {
                 colorIndexes[(spriteColorBack[i][j]<<16)|(spriteColorFront[i][j])] = n;
                 init_pair(n, spriteColorFront[i][j], spriteColorBack[i][j]);
