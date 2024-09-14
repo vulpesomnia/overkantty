@@ -39,18 +39,25 @@ std::vector<std::vector<int>> tiles= {
 
 std::vector<std::vector<int>> sprites= {
     {
-        0,0,0,0,0,
-        0,0,0,0,0,
-        0,0,0,0,0,
-        0,0,0,0,0,
-        0,0,0,0,0,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+
     },
     {
-        1,1,1,1,1,
-        1,1,1,1,1,
-        1,1,1,1,1,
-        1,1,1,1,1,
-        1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     },
 };
 
@@ -59,7 +66,7 @@ std::vector<std::vector<int>> sprites= {
  * 2: tiski
  */
 std::vector<int> tileMap = {
-  1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,
   2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -71,24 +78,22 @@ std::vector<int> tileMap = {
 };
 
 
-std::vector<char> characters = {'a', ' '};
+std::vector<char> characters = {'a', ' ', 'b', 'b'};
 
-/*void draw_sprite(WINDOW *win, int screenInfo[], int spriteIndex, int x, int y){
+void draw_sprite(WINDOW *win, int screenInfo[], int spriteIndex, int x, int y){
     for (int y0=0; y0<screenInfo[2];y0++){
         for (int x0=0; x0<screenInfo[3];x0++){
-            int characterIndex = sprites[spriteIndex][y0*screenInfo[2]+x0]; 
-            //mvwaddch(win, x0+x, y0+y,characters[characterIndex]);
-            //mvwaddch(win, 1, 1,'a');
-
+            int characterIndex = sprites[spriteIndex][y0*screenInfo[3]+x0]; 
+            mvwaddch(win, y0+y, x0+x,characters[characterIndex]);
         }
     }
-}*/
+}
 
 void draw_tile(WINDOW *win, int screenInfo[],int tileIndex, int x, int y){
     //std::cout<<screenInfo[2]<<" "<<screenInfo[3]<<std::endl;
     for (int y0=0; y0<screenInfo[2];y0++){
         for (int x0=0; x0<screenInfo[3];x0++){
-            int characterIndex = tiles[tileIndex][y0*screenInfo[2]+x0]; 
+            int characterIndex = tiles[tileIndex][y0*screenInfo[3]+x0]; 
             mvwaddch(win, y0+y*screenInfo[2], x0+x*screenInfo[3], characters[characterIndex]);
         }
     }
@@ -102,6 +107,7 @@ void update_screen(WINDOW *win, int screenInfo[]){
             draw_tile(win, screenInfo, tileMap[y*screenInfo[5] + x], x, y);
         }
     }
+    draw_sprite(win ,screenInfo, 0, 3,3);
 }
 
 int main(){
