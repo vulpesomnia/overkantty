@@ -2,6 +2,18 @@
 #include <vector>
 #include <iostream>
 
+class Player {
+    public: 
+        int x, y;
+        std::vector<int> sprite;
+        
+        Player(int px, int py, std::vector<int> psprite) {
+            x = px;
+            y = py;
+            sprite = psprite;
+        }
+};
+
 std::vector<std::vector<int>> tiles= {
     {
         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -69,13 +81,15 @@ std::vector<std::vector<int>> sprites= {
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     },
+    {
+    },
 };
 
 /* 0: ilma
  * 1: pöytä
  * 2: tiski
  * 3: leikkuulauta
- * 4: juustoasea
+ * 4: juustoasema
  * 5: paninikone
  */
 std::vector<int> tileMap = {
@@ -91,7 +105,7 @@ std::vector<int> tileMap = {
 };
 
 
-std::vector<char> characters = {' ', '#', 'b', 'b'};
+std::vector<char> characters = {' ', '#', 'b'};
 
 void draw_sprite(WINDOW *win, int screenInfo[], int spriteIndex, int x, int y){
     for (int y0=0; y0<screenInfo[2];y0++){
