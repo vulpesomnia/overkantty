@@ -5,11 +5,25 @@
 #include <unistd.h>
 #include <map>
 
+
+
+class Tile {
+public:
+  int spriteIndex;
+  int heldItem = -1;
+  int x, y;
+  Tile(int tileX, int tileY, int tileSprite) {
+    x = tileX;
+    y = tileY;
+    spriteIndex = tileSprite;
+  }
+};
+
 class Player {
 public: 
   int x, y;
   int spriteIndex;
-
+  int heldItem = 1;
   Player(int px, int py, int psprite) {
     x = px;
     y = py;
@@ -33,21 +47,6 @@ int dy=0;
 //0 nothing
 //1 käntty
 
-class Item {
-  int spriteIndex;
-};
-
-class Tile {
-public:
-  int spriteIndex;
-  Item* heldItem;
-  int x, y;
-  Tile(int tileX, int tileY, int tileSprite) {
-    x = tileX;
-    y = tileY;
-    spriteIndex = tileSprite;
-  }
-};
 
 Tile* tileInFront;
 std::vector<Tile*> levelTiles;
@@ -310,12 +309,13 @@ std::vector<std::vector<short>> spriteColorBack = {
   },
 };
 
-/* 0: ilma
- * 1: pöytä
- * 2: tiski
- * 3: leikkuulauta
- * 4: juustoasema
- * 5: paninikone
+/* 1: ilma
+ * 2: pöytä
+ * 3: tiski
+ * 4: leikkuulauta
+ * 5: juustoasema
+ * 6: känttyasema
+ * 7: paninikone
  */
 
 
@@ -392,7 +392,7 @@ void handleMovement(std::vector<int> movementVector) {
   dx=movementVector[0]/2;
   dy=movementVector[1];
   if (!(newPlayerX < 0 or newPlayerX + tileWidth > width or newPlayerY < 0 or newPlayerY + tileHeight > height)) {
-    for (int i=0;i<tileMap.size();i++){
+    for (int i=0;i<(int)tileMap.size();i++){
       if (tileMap[i]!=1){
         if (newPlayerX<16*(i%18+1) && newPlayerX>16*(i%18-1) && newPlayerY<(i/18+1)*tileHeight && newPlayerY>(i/18-1)*tileHeight){
           return;
@@ -405,21 +405,44 @@ void handleMovement(std::vector<int> movementVector) {
 }
 
 
-Tile* getTile(int x, int y) {
+Tile* getTile(int x, int y, WINDOW* win) {
   int tileX = x/tileWidth;
   int tileY = y/tileHeight;
-  return levelTiles[tileY * tileWidth + tileX];
+  //DEBUG:
+  //draw_sprite(win, screenInfo, 0, tileX * tileWidth, tileY * tileHeight);
+  return levelTiles[tileY * widthTiles + tileX];
 }
 
-void useTile() {
+
+/* 1: ilma
+ * 2: pöytä
+ * 3: tiski
+ * 4: leikkuulauta
+ * 5: juustoasema
+ * 6: känttyasema
+ * 7: paninikone
+ */
+void useTile(WINDOW* win) {
   //Gets the center of player.
   int x = player->x + tileWidth/2;
   int y = player->y + tileHeight/2;
 
-  tileInFront = getTile(x + tileWidth*dx, y + tileHeight*dy);//tileMap[((y+4)/8+dy)*18 + ((x+8)/16+dx/2)];
+  tileInFront = getTile(x + tileWidth*dx, y + tileHeight*dy, win);
+
+  if (tileInFront->spriteIndex == 2) { //Pöytä
+    if (player->heldItem != -1)  {
+      if (tileInFront->heldItem == -1) {
+        tileInFront->heldItem = player->heldItem;
+        player->heldItem = -1;
+      }
+    }else if (tileInFront->heldItem) {
+      player->heldItem = tileInFront->heldItem;
+      tileInFront->heldItem = -1;
+    }
+  }
 }
 
-void handleInput() {
+void handleInput(WINDOW* win) {
   int input = getch();
   for (const auto& pair : inputs) {
     if (input == pair.first) {
@@ -427,15 +450,15 @@ void handleInput() {
     }
   }
   if (input == ' '){
-    useTile();
+    useTile(win);
   }
 }
 
 void utilize_colors(WINDOW *win) {
   int n = 0;
-  for (int i = 0 ; i < sprites.size() ; i++) {
+  for (int i = 0 ; i < (int)sprites.size() ; i++) {
     //spriteColorIndex.push_back({});
-    for (int j = 0 ; j < sprites[i].size() ; j++) {
+    for (int j = 0 ; j < (int)sprites[i].size() ; j++) {
       if (colorIndexes.find((spriteColorBack[i][j]<<16) | (spriteColorFront[i][j])) == colorIndexes.end()) {
         colorIndexes[(spriteColorBack[i][j]<<16)|(spriteColorFront[i][j])] = n;
         init_pair(n, spriteColorFront[i][j], spriteColorBack[i][j]);
@@ -460,7 +483,7 @@ int main(){
   int ch;
   while (true) {
     update_screen(win, screenInfo, levelTiles);
-    handleInput();
+    handleInput(win);
 
     ch = getch();
     if (ch != ERR) {
