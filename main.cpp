@@ -279,7 +279,7 @@ std::vector<int> tileMap = {
     1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,
 };
 
 std::vector<char> characters = {' ', '#', 'b', '/', '|', '\\', '-', '_', '(', ')', 'o', '<', '>'};
@@ -344,7 +344,7 @@ void handleMovement(std::vector<int> movementVector) {
 void getItem(){
     int x=player->x;
     int y=player->y;
-    inventory=tileMap[((y+4)/8+dy)*18 + ((x+8)/16+dx/2)];
+    tileInFront=tileMap[((y+4)/8+dy)*18 + ((x+8)/16+dx/2)];
 }
 
 void handleInput() {
@@ -403,7 +403,7 @@ int main(){
     int widthTiles = width/tileWidth;
 
     int screenInfo[6] = {height, width, tileHeight, tileWidth, heightTiles, widthTiles};
-    WINDOW* win = newwin(height, width, 0, 0);
+    WINDOW* win = newwin(height, width, 24, 0);
     utilize_colors(win);
 
     int ch;
