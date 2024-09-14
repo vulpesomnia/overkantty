@@ -23,6 +23,13 @@ int tileWidth = 16;
 int height = 9 * tileHeight;
 int width = 18 * tileWidth;
 
+int tileInFront=1;
+
+int dx=0;
+int dy=0;
+//0 nothing
+//1 käntty
+
 
 std::vector<std::vector<int>> spriteSizes = {
     {16,8},
@@ -245,10 +252,10 @@ std::vector<std::vector<short>> spriteColorBack = {
 
 
 std::vector<int> tileMap = {
-    2,2,2,4,2,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,
     3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    2,2,2,4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -307,13 +314,21 @@ void handleMovement(std::vector<int> movementVector) {
         for (int i=0;i<tileMap.size();i++){
             if (tileMap[i]!=1){
                 if (newPlayerX<16*(i%18+1) && newPlayerX>16*(i%18-1) && newPlayerY<(i/18+1)*tileHeight && newPlayerY>(i/18-1)*tileHeight){
-                    return;
+                    //return;
                 }
             }
         }
+        dx=movementVector[0];
+        dy=movementVector[1];
         player->x += movementVector[0];
         player->y += movementVector[1];
     }
+}
+
+void getItem(){
+    int x=player->x;
+    int y=player->y;
+    inventory=tileMap[((y+4)/8+dy)*18 + ((x+8)/16+dx/2)];
 }
 
 void handleInput() {
@@ -322,6 +337,9 @@ void handleInput() {
         if (input == pair.first) {
             handleMovement(pair.second);
         }
+    }
+    if (input==' '){
+        getItem();
     }
 }
 
