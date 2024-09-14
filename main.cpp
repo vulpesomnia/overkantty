@@ -11,11 +11,13 @@ class Tile {
 public:
   int spriteIndex;
   int heldItem = -1;
+  bool isActive = false;
   int x, y;
   Tile(int tileX, int tileY, int tileSprite) {
     x = tileX;
     y = tileY;
     spriteIndex = tileSprite;
+
   }
 };
 
@@ -428,14 +430,52 @@ void useTile(WINDOW* win) {
   int y = player->y + tileHeight/2;
 
   tileInFront = getTile(x + tileWidth*dx, y + tileHeight*dy, win);
-
+  //Temporary oletus: 1 on käntty, 2 on leikattu käntty, 3 on juusto, 4 on juustolla täytetty leikattu käntty, 5 on panini käntty ja 6 on juustolla täytetty panini käntty
   if (tileInFront->spriteIndex == 2) { //Pöytä
     if (player->heldItem != -1)  {
       if (tileInFront->heldItem == -1) {
         tileInFront->heldItem = player->heldItem;
         player->heldItem = -1;
       }
-    }else if (tileInFront->heldItem) {
+      else if (tileInFront->heldItem == 2 and player->heldItem == 3){
+        tileInFront->heldItem = -1;
+        player->heldItem = 4;
+      }
+    }
+    else if (tileInFront->heldItem != -1) {
+      player->heldItem = tileInFront->heldItem;
+      tileInFront->heldItem = -1;
+    }
+  }
+  else if (tileInFront->spriteIndex == 4) { //Leikkuulauta
+    if(player->heldItem == 1) {
+      player->heldItem = 2;
+    }
+  }
+  else if (tileInFront->spriteIndex == 5) {//Juustoasema
+    if (player->heldItem == -1) {
+      player->heldItem = 3;
+    }
+  }
+  else if (tileInFront->spriteIndex == 6) {//Känttyasema
+    if (player->heldItem == -1) {
+      player->heldItem = 1;
+    }
+  }
+  else if (tileInFront->spriteIndex == 7) {//Paninikone
+    if ((player->heldItem == 1 or player->heldItem == 4) and tileInFront->isActive == false and tileInFront->heldItem == -1) {
+      tileInFront->heldItem = player->heldItem;
+      player->heldItem = -1;
+      tileInFront->isActive = true;
+      napms(1000 * 10);
+      if (tileInFront->heldItem == 1) {
+        tileInFront->heldItem = 5;
+      }
+      else {
+        tileInFront->heldItem = 6;
+      }
+      tileInFront->isActive = false;
+    } else if (tileInFront->heldItem != -1 and tileInFront->isActive == false and player->heldItem == -1) {
       player->heldItem = tileInFront->heldItem;
       tileInFront->heldItem = -1;
     }
