@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 
+<<<<<<< HEAD
 class Player {
     public: 
         int x, y;
@@ -59,6 +60,8 @@ std::vector<std::vector<int>> tiles= {
     },
 };
 
+=======
+>>>>>>> b76fea2 (added colors)
 std::vector<std::vector<int>> sprites= {
     {
         3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
@@ -85,6 +88,52 @@ std::vector<std::vector<int>> sprites= {
     },
 };
 
+std::vector<std::vector<short>> spriteColorFront = {
+    {
+        196,196,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,196,196,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,196,196,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+    },
+        {
+        196,196,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,196,196,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,196,196,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+        195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,195,
+    },
+};
+
+std::vector<std::vector<short>> spriteColorBack = {
+    {
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    },
+        {
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    },
+};
+
 /* 0: ilma
  * 1: pöytä
  * 2: tiski
@@ -93,25 +142,42 @@ std::vector<std::vector<int>> sprites= {
  * 5: paninikone
  */
 std::vector<int> tileMap = {
+<<<<<<< HEAD
   1,1,1,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
   2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+=======
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+>>>>>>> b76fea2 (added colors)
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 };
 
 
+<<<<<<< HEAD
 std::vector<char> characters = {' ', '#', 'b'};
+=======
+std::vector<char> characters = {'a', 'b', 'c', 'd'};
+>>>>>>> b76fea2 (added colors)
 
 void draw_sprite(WINDOW *win, int screenInfo[], int spriteIndex, int x, int y){
     for (int y0=0; y0<screenInfo[2];y0++){
         for (int x0=0; x0<screenInfo[3];x0++){
             int characterIndex = sprites[spriteIndex][y0*screenInfo[3]+x0]; 
+            int pairIndex=spriteIndex*screenInfo[3]*screenInfo[2]+y0*screenInfo[3]+x0;
+
+            wattron(win, COLOR_PAIR(pairIndex));
             mvwaddch(win, y0+y, x0+x,characters[characterIndex]);
+            wattroff(win, COLOR_PAIR(1));
         }
     }
 }
@@ -120,8 +186,11 @@ void draw_tile(WINDOW *win, int screenInfo[],int tileIndex, int x, int y){
     //std::cout<<screenInfo[2]<<" "<<screenInfo[3]<<std::endl;
     for (int y0=0; y0<screenInfo[2];y0++){
         for (int x0=0; x0<screenInfo[3];x0++){
-            int characterIndex = tiles[tileIndex][y0*screenInfo[3]+x0]; 
+            int characterIndex = sprites[tileIndex][y0*screenInfo[3]+x0]; 
+            int pairIndex=tileIndex*screenInfo[3]*screenInfo[2]+y0*screenInfo[3]+x0;
+            wattron(win, COLOR_PAIR(pairIndex));
             mvwaddch(win, y0+y*screenInfo[2], x0+x*screenInfo[3], characters[characterIndex]);
+            wattroff(win, COLOR_PAIR(1));
         }
     }
 }
@@ -137,12 +206,23 @@ void update_screen(WINDOW *win, int screenInfo[]){
     draw_sprite(win ,screenInfo, 0, 3,3);
 }
 
+void utilize_colors(){
+    for (int i=0;i<sprites.size(); i++){
+        for (int j=0;j<sprites[i].size();j++){
+            init_pair(i*sprites[i].size()+j, spriteColorFront[i][j], spriteColorBack[i][j]);
+        }
+    }
+}
+
 int main(){
     initscr();
     cbreak();
     noecho();
     curs_set(0);
+    start_color();
     nodelay(stdscr, TRUE);
+
+    utilize_colors();
 
     int tileHeight = 8;
     int tileWidth = 16;
