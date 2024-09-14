@@ -59,9 +59,26 @@ std::vector<std::vector<int>> sprites= {
     },
 };
 
+/* 0: ilma
+ * 1: pöytä
+ * 2: tiski
+ */
+std::vector<int> tileMap = {
+  1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+};
+
+
 std::vector<char> characters = {'a', ' '};
 
-void draw_sprite(WINDOW *win, int screenInfo[], int spriteIndex, int x, int y){
+/*void draw_sprite(WINDOW *win, int screenInfo[], int spriteIndex, int x, int y){
     for (int y0=0; y0<screenInfo[2];y0++){
         for (int x0=0; x0<screenInfo[3];x0++){
             int characterIndex = sprites[spriteIndex][y0*screenInfo[2]+x0]; 
@@ -70,7 +87,7 @@ void draw_sprite(WINDOW *win, int screenInfo[], int spriteIndex, int x, int y){
 
         }
     }
-}
+}*/
 
 void draw_tile(WINDOW *win, int screenInfo[],int tileIndex, int x, int y){
     //std::cout<<screenInfo[2]<<" "<<screenInfo[3]<<std::endl;
@@ -82,7 +99,7 @@ void draw_tile(WINDOW *win, int screenInfo[],int tileIndex, int x, int y){
     }
 }
 
-void update_screen(WINDOW *win, int screenInfo[], int tileMap[]){
+void update_screen(WINDOW *win, int screenInfo[]){
     //std::cout<<"hi"<<std::endl;
     for (int y=0;y<screenInfo[4];y++){
         for (int x=0; x<screenInfo[5];x++){
@@ -99,24 +116,19 @@ int main(){
     curs_set(0);
     nodelay(stdscr, TRUE);
 
-    int height=160;
-    int width=40;
-    getmaxyx(stdscr, height, width);
     int tileHeight = 8;
     int tileWidth = 16;
+    int height=9 * tileHeight;
+    int width=18 * tileWidth;
     int heightTiles = height/tileHeight;
     int widthTiles = width/tileWidth;
     //heightTiles-=5;
     //widthTiles-=5;
     int screenInfo[6]={height, width, tileHeight, tileWidth, heightTiles, widthTiles};
-    int tileMap[heightTiles*widthTiles];
-    for (int i=0; i<heightTiles*widthTiles;i++){
-        tileMap[i]=i%2;
-    }
     WINDOW* win = newwin(height, width, 0, 0);
     int ch;
     while(true){
-        update_screen(win, screenInfo, tileMap);
+        update_screen(win, screenInfo);
         wrefresh(win);
         ch=getch();
         if (ch!=ERR){
