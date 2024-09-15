@@ -609,14 +609,13 @@ void useTile(WINDOW* win) {
   int y = player->y + tileHeight/2;
 
   tileInFront = getTile(x + tileWidth*dx, y + tileHeight*dy, win);
-  //Temporary oletus: 1 on käntty, 2 on leikattu käntty, 3 on juusto, 4 on juustolla täytetty leikattu käntty, 5 on panini käntty ja 6 on juustolla täytetty panini käntty
   if (tileInFront->spriteIndex == 2) { //Pöytä
     if (player->heldItem != -1)  {
       if (tileInFront->heldItem == -1) {
         tileInFront->heldItem = player->heldItem;
         player->heldItem = -1;
       }
-      else if (tileInFront->heldItem == 9 and player->heldItem == 3){
+      else if (tileInFront->heldItem == 9 and player->heldItem == 10){
         tileInFront->heldItem = -1;
         player->heldItem = 11;
       }
@@ -643,20 +642,20 @@ void useTile(WINDOW* win) {
   }
   else if (tileInFront->spriteIndex == 7) {//Paninikone
     if ((player->heldItem == 8 or player->heldItem == 11) and tileInFront->isActive == false and tileInFront->heldItem == -1) {
+
       tileInFront->heldItem = player->heldItem;
       player->heldItem = -1;
       tileInFront->isActive = true;
       tileInFront->timeStamp = globalTime;
     
-    } else if (tileInFront->heldItem != -1 and player->heldItem == -1 and abs(globalTime-tileInFront->timeStamp) > FPS * 10) {
-      if (tileInFront->heldItem == 1) {
-        tileInFront->heldItem = 12;
+    } else if (tileInFront->heldItem != -1 and player->heldItem == -1 and abs(globalTime-tileInFront->timeStamp) > FPS * 10) {// 
+      if (tileInFront->heldItem == 8) {
+        player->heldItem = 12;
       }
       else {
-        tileInFront->heldItem = 13;
+        player->heldItem = 13;
       }
       tileInFront->isActive = false;
-      player->heldItem = tileInFront->heldItem;
       tileInFront->heldItem = -1;
     }
   }
@@ -743,6 +742,7 @@ int main(){
     int ch;
     while (true) {
         score--;
+        globalTime++;
         update_screen(win, screenInfo, levelTiles);
         wrefresh(win);
         update_top_screen(topWin);
@@ -757,8 +757,7 @@ int main(){
                 return 0;
             }
         }
+      napms(1000 / FPS);
     }
 
-    wrefresh(win);
-    napms(1000 / FPS);
 }
