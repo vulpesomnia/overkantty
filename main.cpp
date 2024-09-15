@@ -663,6 +663,20 @@ void useTile(WINDOW* win) {
       tileInFront->heldItem = -1;
     }
   }
+  else if (tileInFront->spriteIndex == 3 and player->heldItem != -1) { //tiski
+    int sum = 0;
+    for (const auto& pair : kanttylist) {
+      if (pair.first == player->heldItem and pair.second != 0) {
+        kanttylist[pair.first] = pair.second-1;
+        sum += kanttylist[pair.first];
+        score += (pair.first-7)*100;
+      }
+    }
+    if(sum == 0){
+      score += 1000;
+      generate_kantty_list();
+    }
+  }
 }
 
 void handleInput(WINDOW* win) {
