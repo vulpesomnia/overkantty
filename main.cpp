@@ -598,6 +598,22 @@ Tile* getTile(int x, int y, WINDOW* win) {
 }
 
 
+void generate_kantty_list(){
+  std::random_device rd; // Obtain a random seed from hardware
+  std::mt19937 engine(rd()); // Initialize the engine with the seed
+  int idk = 1 + score/10;
+  std::uniform_int_distribution<int> dist(1, 6);
+  for (int i=0;i<4;i++){
+    int rand=dist(engine);
+    if (rand+7!=9){
+      kanttylist[rand+7]+=idk*(7-rand);
+    }
+    else{
+      i--;
+    }
+  }
+}
+
 /* 1: ilma
  * 2: pöytä
  * 3: tiski
@@ -667,10 +683,11 @@ void useTile(WINDOW* win) {
     int sum = 0;
     for (const auto& pair : kanttylist) {
       if (pair.first == player->heldItem and pair.second != 0) {
+        player->heldItem = -1;
         kanttylist[pair.first] = pair.second-1;
-        sum += kanttylist[pair.first];
         score += (pair.first-7)*100;
       }
+      sum += kanttylist[pair.first];
     }
     if(sum == 0){
       score += 1000;
@@ -744,21 +761,6 @@ void update_top_screen(WINDOW *topWin)
   }
 }
 
-void generate_kantty_list(){
-  std::random_device rd; // Obtain a random seed from hardware
-  std::mt19937 engine(rd()); // Initialize the engine with the seed
-  int idk = 1 + score/10;
-  std::uniform_int_distribution<int> dist(1, 6);
-  for (int i=0;i<4;i++){
-    int rand=dist(engine);
-    if (rand+7!=9){
-      kanttylist[rand+7]+=idk*(7-rand);
-    }
-    else{
-      i--;
-    }
-  }
-}
 
 void update_right_screen(WINDOW *rightWin)
 { 
