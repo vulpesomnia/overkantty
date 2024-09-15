@@ -547,11 +547,11 @@ void update_screen(WINDOW *win, int screenInfo[], std::vector<Tile*> tiles) {
     for (int i = 0; i < (int)tiles.size(); i++) {
         draw_tile(win, screenInfo, tiles[i]->spriteIndex, tiles[i]->x, tiles[i]->y);
         if ((tiles[i]->spriteIndex == 2 or tiles[i]->spriteIndex == 7) and tiles[i]->heldItem != -1) {
-            if (tiles[i]->spriteIndex == 7 and player->heldItem == -1 and abs(globalTime-tiles[i]->timeStamp) > FPS * 10) { 
+            if (tiles[i]->spriteIndex == 7 and abs(globalTime-tiles[i]->timeStamp) > FPS * 10) { 
               if (tiles[i]->heldItem == 8) {
                 tiles[i]->heldItem = 12;
               }
-              else {
+	      else if (tiles[i]->heldItem == 11) {
                 tiles[i]->heldItem = 13;
               }
             }
@@ -679,12 +679,7 @@ void useTile(WINDOW* win) {
       tileInFront->timeStamp = globalTime;
     
     } else if (tileInFront->heldItem != -1 and player->heldItem == -1 and abs(globalTime-tileInFront->timeStamp) > FPS * 10) {// 
-      if (tileInFront->heldItem == 8) {
-        player->heldItem = 12;
-      }
-      else {
-        player->heldItem = 13;
-      }
+      player->heldItem = tileInFront->heldItem;
       tileInFront->isActive = false;
       tileInFront->heldItem = -1;
     }
