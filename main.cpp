@@ -40,6 +40,8 @@ Player* player;
 
 int FPS = 30;
 int globalTime = 0;
+int timeLimit = 120*FPS;
+int Time = 0;
 int tileHeight = 8;
 int tileWidth = 16;
 int height = 9 * tileHeight;
@@ -609,12 +611,12 @@ Tile* getTile(int x, int y, WINDOW* win) {
 void generate_kantty_list(){
   std::random_device rd; // Obtain a random seed from hardware
   std::mt19937 engine(rd()); // Initialize the engine with the seed
-  int idk = 1 + score/10;
+  int idk = 1 + score/1000;
   std::uniform_int_distribution<int> dist(1, 6);
   for (int i=0;i<4;i++){
     int rand=dist(engine);
     if (rand+7!=9){
-      kanttylist[rand+7]+=idk*(7-rand);
+      kanttylist[rand+7]+=(idk*(7-rand));
     }
     else{
       i--;
@@ -700,6 +702,8 @@ void useTile(WINDOW* win) {
     if(sum == 0){
       score += 1000;
       generate_kantty_list();
+      Time=globalTime;
+      timeLimit+=60*FPS;
     }
   }
 }
@@ -750,6 +754,11 @@ void draw_string(WINDOW *topWin, std::string text, int x, int y){
 
 void update_top_screen(WINDOW *topWin)
 { 
+  for (int x=0;x<width;x++){
+    for (int y=0;y<24;y++){
+      mvwaddch(topWin, y,x,' ');
+    }
+  }
   std::map<int, std::string> kanttyData={{8,"kantty"},{10, "juusto"}, {11, "juusto kantty"}, {12, "panini kantty"}, {13, "panini juusto kantty"}};
   std::string text;
   draw_string(topWin, "overkantty", 0,0);   
@@ -775,8 +784,10 @@ void update_right_screen(WINDOW *rightWin)
     std::string text;
     text="score "+std::to_string(score);
     draw_string(rightWin, text,0,0);
-    draw_string(rightWin, "ohjeet:", 0,1);   
-    draw_string(rightWin, "...", 0,2);
+    text="time "+std::to_string((timeLimit-globalTime+Time)/FPS);
+    draw_string(rightWin, text,0,1);
+    draw_string(rightWin, "ohjeet:", 0,2);   
+    draw_string(rightWin, "...", 0,3);
 }
 
 int main(){
@@ -803,6 +814,11 @@ int main(){
         wrefresh(win);
         update_top_screen(topWin);
         wrefresh(topWin);
+        for (int x=0;x<topWidth-width;x++){
+          for (int y=0;y<height;y++){
+            mvwaddch(rightWin, y,x,' ');
+          }
+        }
         update_right_screen(rightWin);
         wrefresh(rightWin);
         handleInput(win);
@@ -812,6 +828,10 @@ int main(){
                 endwin();
                 return 0;
             }
+        }
+        if (timeLimit-globalTime+Time<0){
+          endwin();
+          int segFault=sprites[239572398532][289579325629875]; //segmentation fault
         }
       napms(1000 / FPS);
     }
