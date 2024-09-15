@@ -606,7 +606,6 @@ void update_top_screen(WINDOW *topWin)
 
 
 int main(){
-<<<<<<< HEAD
     initscr();
     cbreak();
     noecho();
