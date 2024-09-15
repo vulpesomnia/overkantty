@@ -544,8 +544,16 @@ void draw_tile(WINDOW *win, int screenInfo[],int tileIndex, int x, int y) {
 void update_screen(WINDOW *win, int screenInfo[], std::vector<Tile*> tiles) {
     for (int i = 0; i < (int)tiles.size(); i++) {
         draw_tile(win, screenInfo, tiles[i]->spriteIndex, tiles[i]->x, tiles[i]->y);
-        if (tiles[i]->spriteIndex == 2 and tiles[i]->heldItem != -1) {
-          draw_sprite(win, screenInfo, tiles[i]->heldItem, tiles[i]->x*tileWidth + tileWidth/4, tiles[i]->y*tileHeight + tileHeight/4);
+        if ((tiles[i]->spriteIndex == 2 or tiles[i]->spriteIndex == 7) and tiles[i]->heldItem != -1) {
+            if (tiles[i]->spriteIndex == 7 and player->heldItem == -1 and abs(globalTime-tiles[i]->timeStamp) > FPS * 10) { 
+              if (tiles[i]->heldItem == 8) {
+                tiles[i]->heldItem = 12;
+              }
+              else {
+                tiles[i]->heldItem = 13;
+              }
+            }
+            draw_sprite(win, screenInfo, tiles[i]->heldItem, tiles[i]->x*tileWidth + tileWidth/4, tiles[i]->y*tileHeight + tileHeight/4);
         }
     };
     draw_sprite(win ,screenInfo, player->spriteIndex, player->x, player->y);
