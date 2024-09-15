@@ -4,6 +4,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <map>
+#include <string>
 
 
 
@@ -46,9 +47,8 @@ int screenInfo[6] = {height, width, tileHeight, tileWidth, heightTiles, widthTil
 
 int dx=0;
 int dy=0;
-//0 nothing
-//1 käntty
 
+int score=1000;
 
 Tile* tileInFront;
 std::vector<Tile*> levelTiles;
@@ -508,32 +508,70 @@ void utilize_colors(WINDOW *win) {
   }
 }
 
+void draw_character(WINDOW *topWin, int index,int x, int y){
+    for (int i = 0; i < 16; i++){
+        if (((index>>(i))&1)==1){
+            mvwaddch(topWin, 1+5-(i)/3 + 7*y,1+3-(i)%3+5*x,'#');
+        }
+        else{
+            mvwaddch(topWin, 1+5-(i)/3 + 7*y,1+3-(i)%3+5*x,' ');
+        }
+    }
+}
+
+void draw_string(WINDOW *topWin, std::string text, int x, int y){
+    std::map<char, int> letterToNumber={{'a', 0}, {'b', 1}, {'c', 2}, {'d', 3}, {'e', 4}, {'f', 5}, {'g', 6}, {'h', 7}, {'i', 8}, {'j', 9}, {'k',10}, {'l', 11}, {'m', 12}, {'n', 13}, {'o', 14}, {'p', 15}, {'q', 16}, {'r', 17}, {'s', 18}, {'t', 19}, {'u', 20}, {'v', 21}, {'w', 22}, {'x', 23}, {'y', 24}, {'z', 25}, {'0', 26}, {'1', 27}, {'2', 28}, {'3', 29}, {'4', 30}, {'5', 31}, {'6', 32}, {'7', 33}, {'8', 34}, {'9', 35}, {' ', 36}, {'-',37}};
+    for (int i=0; i<text.size(); i++){
+        draw_character(topWin, alphabet[letterToNumber[text[i]]],i+x, y);
+    }
+}
+
+void update_top_screen(WINDOW *topWin)
+{ 
+    std::string text;
+    draw_string(topWin, "overkantty", 0,0);   
+    draw_string(topWin, "panini juusto kantty x 99", 0,1);
+    draw_string(topWin, "panini juusto kantty x 99", 0,2);
+    draw_string(topWin, "panini juusto kantty x 99",27,1);
+    draw_string(topWin, "panini juusto kantty x 99",27,2);
+    text="score "+std::to_string(score);
+    draw_string(topWin, text,58,0);
+
+}
+
+
 int main(){
-  initscr();
-  cbreak();
-  noecho();
-  curs_set(0);
-  start_color();
-  nodelay(stdscr, TRUE);
-  createLevel(tileMap);
-  player = new Player(tileHeight * 2, tileWidth * 2, 0);
+    initscr();
+    cbreak();
+    noecho();
+    curs_set(0);
+    start_color();
+    nodelay(stdscr, TRUE);
+    createLevel(tileMap);
+    player = new Player(tileHeight * 2, tileWidth * 2, 0);
+    WINDOW* win = newwin(height, width, 24, 0);
+    int topHeight, topWidth;
+    getmaxyx(stdscr, topHeight, topWidth);
+    WINDOW* topWin = newwin(24, topWidth, 0, 0);
+    utilize_colors(win);
 
-  WINDOW* win = newwin(height, width, 24, 0);
-  utilize_colors(win);
-  int ch;
-  while (true) {
-    update_screen(win, screenInfo, levelTiles);
-    handleInput(win);
-
-    ch = getch();
-    if (ch != ERR) {
-      if (ch == 27) {
-        endwin();
-        return 0;
-      }
+    int ch;
+    while (true) {
+        score--;
+        update_screen(win, screenInfo, levelTiles);
+        wrefresh(win);
+        update_top_screen(topWin);
+        wrefresh(topWin);
+        handleInput(win);
+        ch = getch();
+        if (ch != ERR) {
+            if (ch == 27) {
+                endwin();
+                return 0;
+            }
+        }
     }
 
     wrefresh(win);
     napms(1000 / 30);
-  }
 }
