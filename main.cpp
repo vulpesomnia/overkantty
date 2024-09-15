@@ -28,7 +28,7 @@ class Player {
 public: 
   int x, y;
   int spriteIndex;
-  int heldItem = 1;
+  int heldItem = 8;
   Player(int px, int py, int psprite) {
     x = px;
     y = py;
@@ -541,8 +541,14 @@ void draw_tile(WINDOW *win, int screenInfo[],int tileIndex, int x, int y) {
 void update_screen(WINDOW *win, int screenInfo[], std::vector<Tile*> tiles) {
     for (int i = 0; i < (int)tiles.size(); i++) {
         draw_tile(win, screenInfo, tiles[i]->spriteIndex, tiles[i]->x, tiles[i]->y);
+        if (tiles[i]->spriteIndex == 2 and tiles[i]->heldItem != -1) {
+          draw_sprite(win, screenInfo, tiles[i]->heldItem, tiles[i]->x*tileWidth + tileWidth/4, tiles[i]->y*tileHeight + tileHeight/4);
+        }
     };
     draw_sprite(win ,screenInfo, player->spriteIndex, player->x, player->y);
+    if (player->heldItem != -1) {
+      draw_sprite(win, screenInfo, player->heldItem, player->x + tileWidth/4, player->y - tileHeight/2);
+  }
 }
 
 void createLevel(std::vector<int> map) {
@@ -610,9 +616,9 @@ void useTile(WINDOW* win) {
         tileInFront->heldItem = player->heldItem;
         player->heldItem = -1;
       }
-      else if (tileInFront->heldItem == 2 and player->heldItem == 3){
+      else if (tileInFront->heldItem == 9 and player->heldItem == 3){
         tileInFront->heldItem = -1;
-        player->heldItem = 4;
+        player->heldItem = 11;
       }
     }
     else if (tileInFront->heldItem != -1) {
@@ -621,22 +627,22 @@ void useTile(WINDOW* win) {
     }
   }
   else if (tileInFront->spriteIndex == 4) { //Leikkuulauta
-    if(player->heldItem == 1) {
-      player->heldItem = 2;
+    if(player->heldItem == 8) {
+      player->heldItem = 9;
     }
   }
   else if (tileInFront->spriteIndex == 5) {//Juustoasema
     if (player->heldItem == -1) {
-      player->heldItem = 3;
+      player->heldItem = 10;
     }
   }
   else if (tileInFront->spriteIndex == 6) {//Känttyasema
     if (player->heldItem == -1) {
-      player->heldItem = 1;
+      player->heldItem = 8;
     }
   }
   else if (tileInFront->spriteIndex == 7) {//Paninikone
-    if ((player->heldItem == 1 or player->heldItem == 4) and tileInFront->isActive == false and tileInFront->heldItem == -1) {
+    if ((player->heldItem == 8 or player->heldItem == 11) and tileInFront->isActive == false and tileInFront->heldItem == -1) {
       tileInFront->heldItem = player->heldItem;
       player->heldItem = -1;
       tileInFront->isActive = true;
@@ -644,10 +650,10 @@ void useTile(WINDOW* win) {
     
     } else if (tileInFront->heldItem != -1 and player->heldItem == -1 and abs(globalTime-tileInFront->timeStamp) > FPS * 10) {
       if (tileInFront->heldItem == 1) {
-        tileInFront->heldItem = 5;
+        tileInFront->heldItem = 12;
       }
       else {
-        tileInFront->heldItem = 6;
+        tileInFront->heldItem = 13;
       }
       tileInFront->isActive = false;
       player->heldItem = tileInFront->heldItem;
