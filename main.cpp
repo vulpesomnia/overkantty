@@ -57,32 +57,32 @@ Tile* tileInFront;
 std::vector<Tile*> levelTiles;
 
 std::vector<uint64_t> alphabet = {
-  0b111001111101111, //a
-  0b100100111101111, //b
-  0b000111100100111, //c
+  0b111101111101101, //a
+  0b111101111101111, //b
+  0b111100100100111, //c
   0b001001111101111, //d
-  0b111101111100111, //e
-  0b111100110100100, //f
-  0b111101111001011, //g
-  0b100100111101101, //h
-  0b010000010010010, //i
-  0b010000010010110, //j
-  0b100101110101101, //k
-  0b100100100100110, //l
-  0b000101111101101, //m
-  0b000111101101101, //n
-  0b000111101101111, //o
+  0b111100111100111, //e
+  0b111100110110100, //f
+  0b111100100101111, //g
+  0b101101111101101, //h
+  0b010010010010010, //i
+  0b001001001101111, //j
+  0b101101110101101, //k
+  0b100100100100111, //l
+  0b101101111101101, //m
+  0b111101101101101, //n
+  0b111101101101111, //o
   0b111101111100100, //p
   0b111101111001001, //q
-  0b000110100100100, //r
+  0b111101110101101, //r
   0b111100010001111, //s
-  0b000010111010011, //t
-  0b000101101101111, //u
-  0b000101101101010, //v
-  0b000101101111101, //w
+  0b111010010010010, //t
+  0b101101101101111, //u
+  0b101101101101010, //v
+  0b101101101111101, //w
   0b101101010101101, //x
-  0b000101111001011, //y
-  0b000111001010111, //z
+  0b101101010010010, //y
+  0b111001010100111, //z
   0b111101101101111, //0
   0b110010010010111, //1
   0b111001111100111, //2
@@ -93,13 +93,14 @@ std::vector<uint64_t> alphabet = {
   0b111001001001001, //7
   0b111101111101111, //8
   0b111101111001111, //9
+  0b000000000000000, // 
+  0b000000111000000, //-
+  0b000000100000100, //:
+  0b000000000000100, //.
   0b010010010000010, //!
   0b111001011000010, //?
-  0b000000000000100, //.
   0b000000000010110, //,
   0b000010000010110, //;
-  0b000000100000100, //:
-  0b000000111000000, //-
   0b000000000000111 //_
 };
 
@@ -585,7 +586,7 @@ void draw_character(WINDOW *topWin, int index,int x, int y){
 }
 
 void draw_string(WINDOW *topWin, std::string text, int x, int y){
-    std::map<char, int> letterToNumber={{'a', 0}, {'b', 1}, {'c', 2}, {'d', 3}, {'e', 4}, {'f', 5}, {'g', 6}, {'h', 7}, {'i', 8}, {'j', 9}, {'k',10}, {'l', 11}, {'m', 12}, {'n', 13}, {'o', 14}, {'p', 15}, {'q', 16}, {'r', 17}, {'s', 18}, {'t', 19}, {'u', 20}, {'v', 21}, {'w', 22}, {'x', 23}, {'y', 24}, {'z', 25}, {'0', 26}, {'1', 27}, {'2', 28}, {'3', 29}, {'4', 30}, {'5', 31}, {'6', 32}, {'7', 33}, {'8', 34}, {'9', 35}, {' ', 36}, {'-',37}};
+    std::map<char, int> letterToNumber={{'a', 0}, {'b', 1}, {'c', 2}, {'d', 3}, {'e', 4}, {'f', 5}, {'g', 6}, {'h', 7}, {'i', 8}, {'j', 9}, {'k',10}, {'l', 11}, {'m', 12}, {'n', 13}, {'o', 14}, {'p', 15}, {'q', 16}, {'r', 17}, {'s', 18}, {'t', 19}, {'u', 20}, {'v', 21}, {'w', 22}, {'x', 23}, {'y', 24}, {'z', 25}, {'0', 26}, {'1', 27}, {'2', 28}, {'3', 29}, {'4', 30}, {'5', 31}, {'6', 32}, {'7', 33}, {'8', 34}, {'9', 35}, {' ', 36}, {'-',37}, {':', 38}, {'.', 39}};
     for (int i=0; i<text.size(); i++){
         draw_character(topWin, alphabet[letterToNumber[text[i]]],i+x, y);
     }
@@ -593,17 +594,21 @@ void draw_string(WINDOW *topWin, std::string text, int x, int y){
 
 void update_top_screen(WINDOW *topWin)
 { 
-    std::string text;
     draw_string(topWin, "overkantty", 0,0);   
     draw_string(topWin, "panini juusto kantty x 99", 0,1);
     draw_string(topWin, "panini juusto kantty x 99", 0,2);
     draw_string(topWin, "panini juusto kantty x 99",27,1);
     draw_string(topWin, "panini juusto kantty x 99",27,2);
-    text="score "+std::to_string(score);
-    draw_string(topWin, text,58,0);
-
 }
 
+void update_right_screen(WINDOW *rightWin)
+{ 
+    std::string text;
+    text="score "+std::to_string(score);
+    draw_string(rightWin, text,0,0);
+    draw_string(rightWin, "ohjeet:", 0,1);   
+    draw_string(rightWin, "...", 0,2);
+}
 
 int main(){
     initscr();
@@ -617,17 +622,19 @@ int main(){
     WINDOW* win = newwin(height, width, 24, 0);
     int topHeight, topWidth;
     getmaxyx(stdscr, topHeight, topWidth);
-    WINDOW* topWin = newwin(24, topWidth, 0, 0);
+    WINDOW* topWin = newwin(24, width, 0, 0);
     utilize_colors(win);
+    WINDOW* rightWin = newwin(height,topWidth-width, 0, width);
 
     int ch;
     while (true) {
         score--;
-        globalTime++;
         update_screen(win, screenInfo, levelTiles);
         wrefresh(win);
         update_top_screen(topWin);
         wrefresh(topWin);
+        update_right_screen(rightWin);
+        wrefresh(rightWin);
         handleInput(win);
         ch = getch();
         if (ch != ERR) {
@@ -637,5 +644,7 @@ int main(){
             }
         }
     }
-    napms(1000 / FPS);
+
+    wrefresh(win);
+    napms(1000 / 30);
 }
