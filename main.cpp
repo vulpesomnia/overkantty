@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <map>
 #include <string>
+#include <random>
 
 
 
@@ -51,7 +52,9 @@ int screenInfo[6] = {height, width, tileHeight, tileWidth, heightTiles, widthTil
 int dx=0;
 int dy=0;
 
-int score=1000;
+int score=0;
+
+std::map<int, int> kanttylist={{8,0},{9,0},{10,0},{11,0},{12,0},{13,0}};
 
 Tile* tileInFront;
 std::vector<Tile*> levelTiles;
@@ -609,6 +612,7 @@ void useTile(WINDOW* win) {
   int y = player->y + tileHeight/2;
 
   tileInFront = getTile(x + tileWidth*dx, y + tileHeight*dy, win);
+  //Temporary oletus: 8 on käntty, 9 on leikattu käntty, 10 on juusto, 11 on juustolla täytetty leikattu käntty, 12 on panini käntty ja 13 on juustolla täytetty panini käntty
   if (tileInFront->spriteIndex == 2) { //Pöytä
     if (player->heldItem != -1)  {
       if (tileInFront->heldItem == -1) {
@@ -707,11 +711,39 @@ void draw_string(WINDOW *topWin, std::string text, int x, int y){
 
 void update_top_screen(WINDOW *topWin)
 { 
-    draw_string(topWin, "overkantty", 0,0);   
-    draw_string(topWin, "panini juusto kantty x 99", 0,1);
-    draw_string(topWin, "panini juusto kantty x 99", 0,2);
-    draw_string(topWin, "panini juusto kantty x 99",27,1);
-    draw_string(topWin, "panini juusto kantty x 99",27,2);
+  std::map<int, std::string> kanttyData={{8,"kantty"},{10, "juusto"}, {11, "juusto kantty"}, {12, "panini kantty"}, {13, "panini juusto kantty"}};
+  std::string text;
+  draw_string(topWin, "overkantty", 0,0);   
+  int x=0;
+  int y=1;
+  for (int i=8;i<=13;i++){
+    if (kanttylist[i]!=0){
+      text=kanttyData[i] + " x "+std::to_string(kanttylist[i]); 
+      draw_string(topWin, text, x,y);
+      if (y==1){
+        y++;
+      }else{
+        y=1;
+        x+=27;
+      }
+    }
+  }
+}
+
+void generate_kantty_list(){
+  std::random_device rd; // Obtain a random seed from hardware
+  std::mt19937 engine(rd()); // Initialize the engine with the seed
+  int idk = 1 + score/10;
+  std::uniform_int_distribution<int> dist(1, 6);
+  for (int i=0;i<4;i++){
+    int rand=dist(engine);
+    if (rand+7!=9){
+      kanttylist[rand+7]+=idk*(7-rand);
+    }
+    else{
+      i--;
+    }
+  }
 }
 
 void update_right_screen(WINDOW *rightWin)
@@ -739,9 +771,9 @@ int main(){
     utilize_colors(win);
     WINDOW* rightWin = newwin(height,topWidth-width, 0, width);
 
+    generate_kantty_list();
     int ch;
     while (true) {
-        score--;
         globalTime++;
         update_screen(win, screenInfo, levelTiles);
         wrefresh(win);
